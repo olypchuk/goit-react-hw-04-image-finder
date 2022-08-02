@@ -1,7 +1,7 @@
 // import data from 'components/contacts.json'
 // import { BtnContainer } from './BtnContainer';
 import React, { Component } from 'react';
-import styled from 'styled-components';
+// import styled from 'styled-components';
 import {BsSearch} from 'react-icons/bs'
 
 // export class TestSwitchBtn extends Component {

@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { TestSwitchBtn,App } from 'components/App';
+import {App } from 'components/App';
 import './index.css';
 import './styles.css'
-import data from 'components/contacts.json'
+// import data from 'components/contacts.json'
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
