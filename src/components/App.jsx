@@ -2,7 +2,7 @@
 // import { BtnContainer } from './BtnContainer';
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import {BsSearch} from 'react-icons/bs'
+// import {BsSearch} from 'react-icons/bs'
 import { Searchbar } from './SearchBar/SearchBar';
 import { Audio } from  'react-loader-spinner'
 import { FetchImages } from './Fetch/Fetch';
