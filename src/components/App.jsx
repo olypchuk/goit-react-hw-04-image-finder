@@ -1,9 +1,13 @@
 // import data from 'components/contacts.json'
 // import { BtnContainer } from './BtnContainer';
 import React, { Component } from 'react';
-// import styled from 'styled-components';
+import styled from 'styled-components';
 import {BsSearch} from 'react-icons/bs'
+import { Searchbar } from './SearchBar/SearchBar';
+import { Audio } from  'react-loader-spinner'
+import { FetchImages } from './Fetch/Fetch';
 
+import { ImageGallery } from './ImageGallery/ImageGallery';
 // export class TestSwitchBtn extends Component {
 
 //   state = {
@@ -27,129 +31,99 @@ import {BsSearch} from 'react-icons/bs'
 //     </>)
 //   }
 // }
+const PAGE = 1;
 
-const API_KEY = '27996406-97aa9c49a494d96b999a7c23c'
-
-export class Searchbar extends Component  {
-  state = {
-    value:''
-  }
-
-
-
-  render()
-  {  return(<header className="Searchbar">
-  <form className="SearchForm" >
-    <button type="submit" className="SearchForm-button">
-      <span className="SearchForm-button-label"><BsSearch/>Search</span>
-    </button>
-
-    <input
-      className="SearchForm-input"
-      type="text"
-      autoComplete="off"
-      autoFocus
-      placeholder="Search images and photos"
-    />
-  </form>
-</header>)
-    
-}
-}
-
-export const ImageGallery = ({data,...otherPoprs}) => {
+export const StyledLoader=styled.div`
+margin: 0 auto;
+     height:80px;
+    width :180px;
+`
+export const Loader = () => { 
+  return (<StyledLoader>
+    <Audio
+    height = "80"
+    width = "180"
+    radius = "9"
+   color='#3f51b5'
+    ariaLabel = 'three-dots-loading'     
+    wrapperStyle
   
-  const items = data.hits
-
-  return (<>
-    <ul className="ImageGallery">
-      {items?.map(item => {
-       
-        return (<ImageGalleryItem key={item.id} item={item} {...otherPoprs} />)
-      }
-      )}
-<BsSearch/>
-</ul></>
-  )
-}
-export class ImageGalleryItem extends Component {
-  state = {
-    isModalOpen:false
-  }
-componentDidUpdate(){
-document.addEventListener('keyup', this.closeByEscape)
-
-  }
-  componentWillUnmount() {
-    document.removeEventListener('keyup',this.closeByEscape)
-  }
-  openModal = (e) => {
-    if (e.target.nodeName === 'IMG') {
-     this.setState({ isModalOpen: true })
-   }
-    
-  }
-  closeByEscape = (e) => {
-    if (e.key === 'Escape')  this.closeModal() }
-  
-  closeModal=()=>this.setState({isModalOpen:false})
-  render() {
-    const { isModalOpen } = this.state
- 
-    const{item}=this.props
-    const { id, webformatURL, largeImageURL, user } = item
-    
-  return (<li key={id} className="ImageGalleryItem" onClick={this.openModal}>
-    <img src={webformatURL} alt={user} className="ImageGalleryItem-image" />
-    {isModalOpen && <Modal img={largeImageURL} onClick={this.closeModal}/>}
-</li>)
-  }
-
+  />
+  </StyledLoader>)
 }
 
-export const Loader = () => { }
+export const StyledButtonCont=styled.div`
+  display: flex;
+  justify-content:center;
+  align-items:center;
+  margin: 5px;
+`
+export const Button = ({ page }) => { 
 
-export const Button = () => { 
-  return (<button type="button" className='Button'> load more</button>)
+  return (<StyledButtonCont> <button type="button" className='Button' onClick={page}> load more</button></StyledButtonCont>)
 }
 
-export const Modal = ({img,onClick}) => {
-
-  return (<div className="Overlay" onClick={onClick}>
-  <div className="Modal">
-    <img src={img} alt=""/>
-  </div>
-</div>)
-}
 export class App extends Component{
-
   state = {
-    data:[]
+    data:[],
+    page: 1,
+    value: '',
+    isLoading:false
+  }
   
-}
-  async componentDidMount() {
-    try {
-      const response = await fetch(`https://pixabay.com/api/?page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`)
- 
-      const res = await response.json()
-      
-      this.setState({ data: res })
-   console.log('this.state.data :>> ', this.state.data);
- 
-    return res
-      
-    } catch (error) {
-      console.log('error.message :>> ', error.message);
+  async componentDidUpdate(prevprops, prevstate) {
+  
+  //  console.log('prevstate.value :>> ', prevstate.value);
+  //  console.log('this.state.value :>> ', this.state.value);
+  //  console.log('prevstate.page', prevstate.page)
+  //  console.log('this.state.page :>> ', this.state.page);
+    if (prevstate.isLoading) {
+        this.setState({isLoading:false})
     }
-   
+
+  //   if (prevstate.page !== this.state.page||prevstate.value!==this.state.value) {
+  //     console.log('fetchhh :>> ',);
+  //       const res = await FetchImages(prevstate.page , prevstate.value)
+
+  // this.setState({ data: res.hits,value:prevstate.value,page: PAGE,isLoading:false})
+  //   }
+
 }
-  render() {
-    
-    return (<>
-      <Searchbar onSubmit={this.state.data} />
-      <ImageGallery data={this.state.data}  />
-      <Button/>
+  loadMore = async () => {
+    const { page, value } = this.state
+    this.setState((PrevState) => {
+      return {page: PrevState.page + 1
+    }
+})
+    this.setState({ page: this.state.page + 1 ,isLoading:true})
+
+    const res= await FetchImages(page+1,value)
+    this.setState({ data: [...this.state.data, ...res.hits]})  
    
+  }
+ 
+
+  didFetch = async ({ value }) => {
+  this.setState({isLoading:true})
+    const res = await FetchImages(PAGE, value)
+
+  this.setState({ data: res.hits,value,page: PAGE,isLoading:false})
+
+  }  
+ 
+  render() {
+    const { page,  data } = this.state
+    console.log('page :>> ', page);
+    console.log('data :>> ', data);
+const isBtn=data.length/page===12&&data.length>0
+    return (<>
+      
+      <Searchbar onSubmit={this.didFetch} />
+
+      <ImageGallery data={data} />
+      {this.state.isLoading && <Loader />}
+      {isBtn&&<Button page={this.loadMore} />}
+
     </>)
   }
 }
