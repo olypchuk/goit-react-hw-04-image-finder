@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import { Modal } from "components/Modal/Modal"
 import PropTypes from "prop-types"
+
 export class ImageGalleryItem extends Component {
   state = {
     isModalOpen:false
@@ -10,18 +11,23 @@ export class ImageGalleryItem extends Component {
 
   }
   componentWillUnmount() {
-    document.removeEventListener('keyup',this.closeByEscape)
+    document.removeEventListener('keyup', this.closeByEscape)
+  
   }
   openModal = (e) => {
     if (e.target.nodeName === 'IMG') {
-     this.setState({ isModalOpen: true })
+      this.setState({ isModalOpen: true })
+      document.documentElement.style.overflow = "hidden"
    }
     
   }
   closeByEscape = (e) => {
     if (e.key === 'Escape')  this.closeModal() }
   
-  closeModal=()=>this.setState({isModalOpen:false})
+  closeModal = () => {
+    this.setState({ isModalOpen: false });
+    document.documentElement.style.overflow = null
+  }
   render() {
     const { isModalOpen } = this.state
  

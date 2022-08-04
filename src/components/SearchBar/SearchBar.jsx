@@ -1,6 +1,9 @@
 import React,{Component} from "react"
 import { BsSearch } from 'react-icons/bs'
 import PropTypes from "prop-types"
+import { toast } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
+  
 export class Searchbar extends Component  {
   state = {
     value: '',
@@ -9,22 +12,14 @@ export class Searchbar extends Component  {
   handleChange = (e) => {
     this.setState({ value: e.currentTarget.value.toLowerCase().trim() })
   }
-//   componentDidUpdate(p,prev) {
-// const {value}=this.state
-//     console.log('prev.value :>> ', prev.value);
-//     console.log('this.state.value :>> ', value);
-//     if (prev.value !== value) {
-//       this.props.onSubmit({ value })
-//     }
-//   }
+
   handleSubmit = async(e) => {
     e.preventDefault();
- 
-    // this.setState({ value: e.currentTarget.value.value })
+
 
     const { value } = this.state
     if (value.length=== 0) {
-      alert('введи запрос')
+      toast.warn('please enter something')
     }
     if (value.length > 0) {
 

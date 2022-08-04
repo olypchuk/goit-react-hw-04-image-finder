@@ -12,3 +12,4 @@ Modal.propTypes = {
   img: PropTypes.string.isRequired,
   onClick:PropTypes.func.isRequired
 }
+
