@@ -15,8 +15,6 @@ export class Searchbar extends Component  {
 
   handleSubmit = async(e) => {
     e.preventDefault();
-
-
     const { value } = this.state
     if (value.length=== 0) {
       toast.warn('please enter something')
@@ -39,11 +37,11 @@ export class Searchbar extends Component  {
     </button>
 
         <input
-          name="value"
-      className="SearchForm-input"
-      type="text"
-      autoComplete="off"
-      autoFocus
+        name="value"
+        className="SearchForm-input"
+        type="text"
+        autoComplete="off"
+        autoFocus
         placeholder="Search images and photos"
         onChange={this.handleChange}
     />

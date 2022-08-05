@@ -6,7 +6,7 @@ import { Button } from './Button/Button';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { Modal } from './Modal/Modal';
 const PAGE = 1;
 
 export class App extends Component{
@@ -14,25 +14,30 @@ export class App extends Component{
     data:[],
     page: 1,
     value: '',
-    isLoading:false
+    isLoading: false,
+    isModalOpen: false,
+    urlPicture:''
+  }
+  getSnapshotBeforeUpdate() {
+     const { offsetHeight } = document.querySelector('header');
+      return window.innerHeight - offsetHeight * 2;
+  }
+  async componentDidUpdate(prevprops, prevstate, snapshot) {
+
+    document.addEventListener('keyup', this.closeByEscape)
+    if (prevstate.isLoading) {
+      this.setState({ isLoading: false })
+    } 
+    if (this.state.page > 1) {
+         window.scrollBy({
+        top: snapshot,
+        behavior: 'smooth',
+      });
+   }
+
   }
   
-  async componentDidUpdate(prevprops, prevstate) {
 
-    if (prevstate.isLoading) {
-        this.setState({isLoading:false})
-    }
-      
-
-  
-  //   if (prevstate.page !== this.state.page||prevstate.value!==this.state.value) {
-  //     console.log('fetchhh :>> ',);
-  //       const res = await FetchImages(prevstate.page , prevstate.value)
-
-  // this.setState({ data: res.hits,value:prevstate.value,page: PAGE,isLoading:false})
-  //   }
-
-}
   loadMore = async () => {
     const { page, value } = this.state
     this.setState((PrevState) => {
@@ -50,21 +55,32 @@ export class App extends Component{
      if (res.hits.length ===0) {
        toast.error("no matches for this request")
      }
-    this.setState( { data: res.hits, value, page: PAGE, isLoading: false })
+    this.setState( { data: res.hits, value, page: PAGE })
 
+  }
+  openModal = (image) => {
+      this.setState({ isModalOpen: true,urlPicture:image})
+      document.documentElement.style.overflow = "hidden"
+  }
+  closeModal = (e) => {
+
+    this.setState({ isModalOpen: false,urlPicture:'' });
+    document.documentElement.style.overflow = null
+    
   }
 
   render() {
 
-const { page,  data } = this.state
+    const { page, data, isModalOpen, urlPicture } = this.state
+
 const isBtn=data.length/page===12&&data.length>0
     return (<>
       <Searchbar onSubmit={this.didFetch}/>
-      <ImageGallery data={data} />
+      <ImageGallery data={data} onClick={this.openModal} />
       <ToastContainer autoClose={2500} />
       {this.state.isLoading && <Loader />}
       {isBtn&&<Button page={this.loadMore} />}
-
+      {isModalOpen && <Modal img={urlPicture} onClick={this.closeModal}/>}
     </>)
   }
 }
