@@ -16,7 +16,8 @@ export class App extends Component{
     value: '',
     isLoading: false,
     isModalOpen: false,
-    urlPicture:''
+    urlPicture: '',
+    isVisible:false
   }
   getSnapshotBeforeUpdate() {
      const { offsetHeight } = document.querySelector('header');
@@ -44,18 +45,21 @@ export class App extends Component{
       return {page: PrevState.page + 1 }})
     this.setState({ page: this.state.page + 1 ,isLoading:true})
     const res= await FetchImages(page+1,value)
-    this.setState({ data: [...this.state.data, ...res.hits]})  
+    this.setState({ data: [...this.state.data, ...res.hits],isVisible: this.state.page<Math.ceil(res.total/12)})  
    
   }
  
 
   didFetch = async ({ value }) => {
+
+    if(this.state.value===value)return toast.error('You wrote the same value')
     this.setState({ isLoading: true })
     const res = await FetchImages(PAGE, value)
      if (res.hits.length ===0) {
        toast.error("no matches for this request")
-     }
-    this.setState( { data: res.hits, value, page: PAGE })
+    }
+
+    this.setState( { data: res.hits, value, page:this.state.page,isVisible: this.state.page<Math.ceil(res.total/12) })
 
   }
   openModal = (image) => {
@@ -71,15 +75,15 @@ export class App extends Component{
 
   render() {
 
-    const { page, data, isModalOpen, urlPicture } = this.state
+    const { isLoading, data, isModalOpen, urlPicture,isVisible } = this.state
 
-const isBtn=data.length/page===12&&data.length>0
+
     return (<>
       <Searchbar onSubmit={this.didFetch}/>
       <ImageGallery data={data} onClick={this.openModal} />
       <ToastContainer autoClose={2500} />
-      {this.state.isLoading && <Loader />}
-      {isBtn&&<Button page={this.loadMore} />}
+      {isLoading && <Loader />}
+      {isVisible&&<Button page={this.loadMore} />}
       {isModalOpen && <Modal img={urlPicture} onClick={this.closeModal}/>}
     </>)
   }
