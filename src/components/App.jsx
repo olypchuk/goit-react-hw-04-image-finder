@@ -1,4 +1,4 @@
-import React, { Component, useEffect,useLayoutEffect } from 'react';
+import React from 'react';
 import { Searchbar } from './SearchBar/SearchBar';
 import { Loader } from './Loader/Loader';
 import { FetchImages } from './Fetch/Fetch';
