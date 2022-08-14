@@ -1,27 +1,26 @@
 import PropTypes from "prop-types"
 import { useEffect } from "react"
-// import { Component } from "react"
+import { createPortal } from "react-dom"
 
 export const Modal = ({ img, onClick }) => {
   useEffect(() => {
     document.addEventListener('keyup', closeByEscape)
-  })
-  useEffect(() => {
     return () => {
       document.removeEventListener('keyup', closeByEscape)
   }
-})
+  })
+
   const closeByEscape = (e) => {
     if (e.key === 'Escape') onClick()
   }
   const closeByBackdrop = (e) => {
      if (e.target === e.currentTarget) onClick()
   }
-    return (<div className="Overlay" onClick={closeByBackdrop}>
+    return createPortal(<div className="Overlay" onClick={closeByBackdrop}>
       <div className="Modal">
         <img src={img} alt={img} loading='lazy' />
       </div>
-    </div>)
+    </div>,document.querySelector('#modal'))
   
 }
 

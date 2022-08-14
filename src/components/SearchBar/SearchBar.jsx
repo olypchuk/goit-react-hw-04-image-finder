@@ -1,10 +1,10 @@
-import React,{useState} from "react"
+import React,{useState,memo} from "react"
 import { BsSearch } from 'react-icons/bs'
 import PropTypes from "prop-types"
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export const  Searchbar=(props)=> {
+const  Searchbar=(props)=> {
   const [valueInput,setValueInput]=useState('')
  
   const handleChange = (e) => {
@@ -42,6 +42,7 @@ export const  Searchbar=(props)=> {
     
 
 }
+export default memo(Searchbar)
 
 // export class Searchbar1 extends Component  {
 //   state = {
