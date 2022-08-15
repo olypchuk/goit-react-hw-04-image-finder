@@ -60,9 +60,9 @@ export function App() {
     setData([])
   },[value])
   const loadMore = useCallback(async () => {
-    SetPage(prevPage=>prevPage + 1)
+    SetPage(page + 1)
 
-  },[])
+  },[page])
 
   const openModal = useCallback((image) => {
     setisModalOpen(true)
